@@ -12,7 +12,8 @@ import java.util.List;
 
 public class NoteJdbcDao extends BaseJdbcDao implements NoteDao {
 
-    private static final String SELECT_BY_ID = "select * from notes where bookId = ?";
+    private static final String SELECT_BY_BOOKID = "select * from note where bookId = ?";
+    private static final String SELECT_BY_NOTEID = "select * from note where noteId = ?";
 
     public List<Note> getNotes(int bookId) {
         Connection conn = null;
@@ -23,7 +24,7 @@ public class NoteJdbcDao extends BaseJdbcDao implements NoteDao {
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(SELECT_BY_ID);
+            stmt = conn.prepareStatement(SELECT_BY_BOOKID);
             stmt.setInt(1, bookId);
             rs = stmt.executeQuery();
 
@@ -40,6 +41,50 @@ public class NoteJdbcDao extends BaseJdbcDao implements NoteDao {
         } finally {
             releaseResources(conn, stmt, rs);
         }
+    }
+
+
+    public Note get(int id) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        Note note = null;
+
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(SELECT_BY_NOTEID);
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                note = create(rs);
+            }
+
+            return note;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return note;
+        } finally {
+            releaseResources(conn, stmt, rs);
+        }
+    }
+
+    public boolean insert(Note note) {
+        return false;
+    }
+
+    public List<Note> getAll() {
+        return null;
+    }
+
+    public boolean update(Note note) {
+        return false;
+    }
+
+    public boolean delete(String id) {
+        return false;
     }
 
     private Note create(ResultSet rs) throws SQLException {

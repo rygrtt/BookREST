@@ -17,4 +17,8 @@ public class NoteService {
     public List<Note> getNotes(int bookId) {
         return dao.getNotes(bookId);
     }
+
+    public Note getNote(int noteId) {
+        return dao.get(noteId);
+    }
 }
