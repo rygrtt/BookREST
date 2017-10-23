@@ -73,6 +73,8 @@ public class Resources {
     @Path("/{userid}/{bookid}/{noteid}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getNote() {
+
+        NoteService service = new NoteService();
         // authenticate user
         // if authenticated return json of note
         // else return fail/unauthenticated message
