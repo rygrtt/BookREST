@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 // abstract class defining database connection methods for all inheritors
 
 public abstract class BaseJdbcDao {
-    private static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
+    private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost:3306/BookTracker";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "mysql";

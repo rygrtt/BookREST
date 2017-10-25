@@ -87,7 +87,7 @@ public class NoteJdbcDao extends BaseJdbcDao implements NoteDao {
         return false;
     }
 
-    private Note create(ResultSet rs) throws SQLException {
+    private Note create(ResultSet rs) throws SQLException{
 
         int bookId = rs.getInt("bookId");
         int noteId = rs.getInt("noteId");
