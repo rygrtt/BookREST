@@ -13,19 +13,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-//TODO: Authentication filter
 
 @Path("/users")
 public class Resources {
 
     @GET
-    @Path("/{userid}")
+    @Path("/{userid}/books")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Book> getBooks(@PathParam("userid") int userId) {
-
-        if (userId == 0 || !authenticated(userId)) {
-            return null;
-        }
 
         BookService service = new BookService();
 
@@ -43,13 +38,9 @@ public class Resources {
 
 
     @GET
-    @Path("/{userid}/{bookid}")
+    @Path("/{userid}/books/{bookid}/notes")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Note> getNotes(@PathParam("userid") int userId, @PathParam("bookid") int bookId) {
-
-        if (userId == 0 || !authenticated(userId)) {
-            return null;
-        }
 
         List<Note> notes;
 
@@ -68,15 +59,10 @@ public class Resources {
     }
 
     @GET
-    @Path("/{userid}/{bookid}/{noteid}")
+    @Path("/{userid}/books/{bookid}/notes/{noteid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Note getNote(@PathParam("userid") int userId, @PathParam("noteid") int noteId) {
 
-
-
-        if (userId == 0 || !authenticated(userId)) {
-            return null;
-        }
 
         NoteService service = new NoteService();
         try {
@@ -90,10 +76,4 @@ public class Resources {
         }
 
     }
-
-    private boolean authenticated(int userId) {
-        return true;
-    }
-
-
 }

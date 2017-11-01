@@ -17,7 +17,7 @@ import java.util.Date;
 @Path("/login")
 public class LoginEndpoint {
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response authenticateUser(@FormParam("username") String username,
                                      @FormParam("password") String password) {
@@ -31,7 +31,7 @@ public class LoginEndpoint {
             String token = issueToken(username);
 
             // Return the token on the response
-            return Response.ok(token, MediaType.APPLICATION_JSON).build();
+            return Response.ok(token, MediaType.TEXT_PLAIN).build();
 
 
         } catch (Exception e) {
@@ -52,7 +52,8 @@ public class LoginEndpoint {
 
         // pulling a pre-generated key from file
         // would probably want something more robust in a "real" system
-        String path = System.getProperty("user.dir") + "//key.txt";
+        //TODO: don't hard code this :(
+        String path = "C:\\Users\\grott\\IdeaProjects\\BookREST\\key.txt";
         Key key = null;
         try {
             FileInputStream fin = new FileInputStream(path);
