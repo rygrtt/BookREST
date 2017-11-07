@@ -96,7 +96,6 @@ public class BookJdbcDao extends BaseJdbcDao implements BookDao {
         return false;
     }
 
-
     private Book create(ResultSet rs) throws SQLException {
 
         int bookId = rs.getInt("bookId");
