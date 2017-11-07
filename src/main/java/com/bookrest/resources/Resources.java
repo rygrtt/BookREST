@@ -1,6 +1,7 @@
 package com.bookrest.resources;
 
 
+import com.bookrest.annotations.Secured;
 import com.bookrest.model.Book;
 import com.bookrest.model.Note;
 import com.bookrest.svc.BookService;
@@ -14,10 +15,13 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 
+
+
 @Path("/users")
 public class Resources {
 
     @GET
+    @Secured
     @Path("/{userid}/books")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Book> getBooks(@PathParam("userid") int userId) {
@@ -38,6 +42,7 @@ public class Resources {
 
 
     @GET
+    @Secured
     @Path("/{userid}/books/{bookid}/notes")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Note> getNotes(@PathParam("userid") int userId, @PathParam("bookid") int bookId) {
@@ -59,6 +64,7 @@ public class Resources {
     }
 
     @GET
+    @Secured
     @Path("/{userid}/books/{bookid}/notes/{noteid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Note getNote(@PathParam("userid") int userId, @PathParam("noteid") int noteId) {
