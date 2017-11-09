@@ -4,21 +4,38 @@ package com.bookrest.resources;
 import com.bookrest.annotations.Secured;
 import com.bookrest.model.Book;
 import com.bookrest.model.Note;
+import com.bookrest.model.Person;
+import com.bookrest.model.User;
 import com.bookrest.svc.BookService;
 import com.bookrest.svc.NoteService;
+import com.bookrest.svc.UserService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
-
-
 
 
 @Path("/users")
 public class Resources {
+
+    @POST
+    @Path("/new")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response createUser(@FormParam("username") String username,
+                               @FormParam("password") String password) {
+        User user = new User(0, username, password);
+        UserService service = new UserService();
+
+        boolean success = service.createUser(user);
+
+        if (success) {
+            return Response.status(Response.Status.CREATED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @GET
     @Secured
@@ -38,6 +55,48 @@ public class Resources {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @POST
+    @Secured
+    @Path("/{userid}/books/new")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addBook(@PathParam("userid") int userId,
+                            @FormParam("title") String title,
+                            @FormParam("publisher") String publisher,
+                            @FormParam("yearpublished") int yearPublished,
+                            @FormParam("edition") String edition,
+                            @FormParam("afirstname") String aFname,
+                            @FormParam("alastname") String aLname,
+                            @FormParam("tfirstname") String tFname,
+                            @FormParam("tlastname") String tLname) {
+
+        if (title.isEmpty() || aFname.isEmpty() || aLname.isEmpty() || publisher.isEmpty()
+                || yearPublished == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        Book book = new Book(0, userId, yearPublished, publisher, edition, title);
+
+        Person author = new Person(aFname, aLname);
+
+        Person translator = null;
+
+        if (!tFname.isEmpty() && !tLname.isEmpty()) {
+            translator = new Person(tFname, tLname);
+        }
+
+        BookService svc = new BookService();
+
+       if (svc.insert(book, author, translator, userId)) {
+           return Response.status(Response.Status.CREATED).build();
+       } else {
+           return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+       }
+
+
+
+
     }
 
 
@@ -72,10 +131,10 @@ public class Resources {
 
         NoteService service = new NoteService();
         try {
-           Note note = service.getNote(noteId);
+            Note note = service.getNote(noteId);
 
 
-           return note;
+            return note;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -13,6 +13,7 @@ public class UserJdbcDao extends BaseJdbcDao implements UserDao {
 
     private static final String SELECT_BY_NAME_PWD = "select * from User where userName = ? and userPw = ?";
 
+    private static final String INSERT_SQL = "insert into user(userName, userPw) values(?, ?)";
 
     public User get(String userName, String password) {
         Connection conn = null;
@@ -47,7 +48,26 @@ public class UserJdbcDao extends BaseJdbcDao implements UserDao {
     }
 
     public boolean insert(User user) {
-        return false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(INSERT_SQL);
+            stmt.setString(1,  user.getUserName());
+            stmt.setString(2, user.getPassword());
+
+            int count = stmt.executeUpdate();
+
+            return count == 1;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            releaseResources(conn, stmt, rs);
+        }
+
     }
 
     public List<User> getAll() {
