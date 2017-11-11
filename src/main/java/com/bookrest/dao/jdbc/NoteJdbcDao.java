@@ -159,9 +159,6 @@ public class NoteJdbcDao extends BaseJdbcDao implements NoteDao {
 
     private Citation createCitation(ResultSet rs) throws SQLException {
 
-        //noteId, pageNoteBegins, pageNoteEnds, publisher, yearPublished, edition, title,
-        // a.firstname as afirstname, a.lastname as alastname, t.firstname as tfirstname, t.lastname as tlastname
-        int noteId = rs.getInt("noteId");
         int pageNoteBegins = rs.getInt("pageNoteBegins");
         int pageNoteEnds = rs.getInt("pageNoteEnds");
         int yearPublished = rs.getInt("yearPublished");
