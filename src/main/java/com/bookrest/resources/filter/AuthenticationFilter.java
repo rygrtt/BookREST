@@ -3,9 +3,9 @@
 * https://stackoverflow.com/questions/26777083/best-practice-for-rest-token-based-authentication-with-jax-rs-and-jersey
 */
 
-package com.bookrest.filter;
+package com.bookrest.resources.filter;
 
-import com.bookrest.annotations.Secured;
+import com.bookrest.resources.annotations.Secured;
 import com.bookrest.utils.KeyFinder;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -71,7 +71,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         // returns collection of all claims contained in the token
         Jws<Claims> jws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 
-        // compares expiration time to current system time
+        // gets expiration time from among claims and comapres against current system time
         if (jws.getBody().getExpiration().getTime() < System.currentTimeMillis()) {
             throw new Exception();
         }

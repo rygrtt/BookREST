@@ -1,11 +1,8 @@
 package com.bookrest.resources;
 
 
-import com.bookrest.annotations.Secured;
-import com.bookrest.model.Book;
-import com.bookrest.model.Note;
-import com.bookrest.model.Person;
-import com.bookrest.model.User;
+import com.bookrest.model.*;
+import com.bookrest.resources.annotations.Secured;
 import com.bookrest.svc.BookService;
 import com.bookrest.svc.NoteService;
 import com.bookrest.svc.UserService;
@@ -93,10 +90,6 @@ public class Resources {
        } else {
            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
        }
-
-
-
-
     }
 
 
@@ -122,19 +115,58 @@ public class Resources {
         }
     }
 
+    @POST
+    @Secured
+    @Path("/{userid}/books/{bookid}/notes/new")
+    public Response addNote(@PathParam("userid") int userId,
+                            @PathParam("bookid") int bookId,
+                            @FormParam("pagenotebegins") int pageNoteBegins,
+                            @FormParam("pagenoteends") int pageNoteEnds,
+                            @FormParam("text") String text) {
+
+        if (pageNoteBegins < pageNoteEnds || text.isEmpty() || pageNoteBegins == 0 || pageNoteEnds == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        Note note = new Note(bookId, 0, pageNoteBegins, pageNoteEnds, text);
+        NoteService svc = new NoteService();
+
+        if (svc.insert(note)) {
+            return Response.status(Response.Status.CREATED).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
     @GET
     @Secured
     @Path("/{userid}/books/{bookid}/notes/{noteid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Note getNote(@PathParam("userid") int userId, @PathParam("noteid") int noteId) {
-
+    public Note getNote(@PathParam("noteid") int noteId) {
 
         NoteService service = new NoteService();
         try {
             Note note = service.getNote(noteId);
-
-
             return note;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @GET
+    @Secured
+    @Path("/{userid}/books/{bookid}/notes/{noteid}/citation")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Citation getCitation(@PathParam("noteid") int noteId) {
+
+        NoteService service = new NoteService();
+
+        try {
+            Citation citation = service.getCitation(noteId);
+            return citation;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
