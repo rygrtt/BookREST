@@ -2,12 +2,9 @@ package com.bookrest.dao.jdbc;
 
 import com.bookrest.dao.BookDao;
 import com.bookrest.model.Book;
+import com.bookrest.model.Person;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +18,11 @@ public class BookJdbcDao extends BaseJdbcDao implements BookDao {
 
     private static final String UPDATE_SQL = "update book set title = ?, yearPublished = ?, publisher = ?, edition = ?";
 
-    private static final String INSERT_SQL = "insert into book (bookId, ";
+    private static final String INSERT_AUTHOR = "insert into author (firstName, lastName) values (?, ?)";
+
+    private static final String INSERT_TRANSLATOR = "insert into translator (firstName, lastName) values (?, ?)";
+
+    private static final String INSERT_BOOK = "insert into book (title, publisher, edition, yearPublished, userId, translatorId, authorId) values(?, ?, ?, ?, ?, ?, ?)";
 
 
     public List<Book> getBooks(int userId) {
@@ -54,6 +55,81 @@ public class BookJdbcDao extends BaseJdbcDao implements BookDao {
 
     public boolean insert(Book book) {
         return false;
+    }
+
+    // Since this is a test app, we're not checking to see if an author/translator already exists in the db,
+    // we're just living with duplicates
+    public boolean insert(Book book, Person author, Person translator, int userId) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        boolean success;
+
+        try {
+            // turning off autocommit to create transaction
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            // ensure we get the new keys back for later insertions
+            stmt = conn.prepareStatement(INSERT_AUTHOR, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, author.getFirstName());
+            stmt.setString(2, author.getLastName());
+
+            stmt.executeUpdate();
+            int authorId = 0;
+
+            rs = stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+                authorId = rs.getInt(1);
+            }
+
+            int translatorId = 0;
+
+            if (translator != null) {
+                stmt = conn.prepareStatement(INSERT_TRANSLATOR, Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, translator.getFirstName());
+                stmt.setString(2, translator.getLastName());
+                stmt.executeUpdate();
+                rs = stmt.getGeneratedKeys();
+
+                if (rs.next()) {
+                    translatorId = rs.getInt(1);
+                }
+
+            }
+
+            stmt = conn.prepareStatement(INSERT_BOOK);
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getPublisher());
+            stmt.setString(3, book.getEdition());
+            stmt.setInt(4, book.getYearPublished());
+            stmt.setInt(5, userId);
+            stmt.setInt(7, authorId);
+
+            if (translatorId != 0) {
+                stmt.setInt(6, translatorId);
+            }
+
+            stmt.executeUpdate();
+
+            conn.commit();
+            success = true;
+
+        } catch (SQLException e) {
+            success = false;
+                try {
+                    e.printStackTrace();
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+        } finally {
+            releaseResources(conn, stmt, rs);
+        }
+
+        return success;
     }
 
     public Book get(int id) {
@@ -101,10 +177,12 @@ public class BookJdbcDao extends BaseJdbcDao implements BookDao {
         int bookId = rs.getInt("bookId");
         int userId = rs.getInt("userId");
         int yearPublished = rs.getInt("yearPublished");
+        int authorId = rs.getInt("authorId");
+        int translatorId = rs.getInt("translatorId");
         String publisher = rs.getString("publisher");
         String title = rs.getString("title");
         String edition = rs.getString("edition");
 
-        return new Book(bookId, userId, yearPublished, publisher, edition, title);
+        return new Book(bookId, userId, yearPublished, publisher, edition, title, authorId, translatorId);
     }
 }

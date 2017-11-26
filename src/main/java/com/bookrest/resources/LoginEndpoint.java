@@ -54,7 +54,7 @@ public class LoginEndpoint {
 
         // creates String representation of a jwt object with expiration in 10 mins
         // and user name in subject field
-        Date expirationDate = new Date(System.currentTimeMillis() + 600000);
+        Date expirationDate = new Date(System.currentTimeMillis() + 60000000);
 
         return Jwts.builder().setSubject(username).setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, key).compact();

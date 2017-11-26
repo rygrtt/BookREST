@@ -15,4 +15,8 @@ public class UserService {
     public User find(String username, String password) {
         return dao.get(username, password);
     }
+
+    public boolean createUser(User user) {
+        return dao.insert(user);
+    }
 }
