@@ -3,20 +3,24 @@ package com.bookrest.model;
 public class Book {
     private int bookId;
     private int userId;
+    private int yearPublished;
+    private String publisher;
+    private String edition;
+    private String title;
+    private int authorId;
+    private int translatorId;
 
-    public Book(int bookId, int userId, int yearPublished, String publisher, String edition, String title) {
+    public Book(int bookId, int userId, int yearPublished, String publisher, String edition, String title, int authorId, int translatorId) {
         this.bookId = bookId;
         this.userId = userId;
         this.yearPublished = yearPublished;
         this.publisher = publisher;
         this.edition = edition;
         this.title = title;
+        this.authorId = authorId;
+        this.translatorId = translatorId;
     }
 
-    private int yearPublished;
-    private String publisher;
-    private String edition;
-    private String title;
 
     public int getBookId() {
         return bookId;

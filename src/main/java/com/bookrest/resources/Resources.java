@@ -13,11 +13,11 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 
-@Path("/users")
+@Path("/api")
 public class Resources {
 
     @POST
-    @Path("/new")
+    @Path("/users/new")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createUser(@FormParam("username") String username,
                                @FormParam("password") String password) {
@@ -36,9 +36,9 @@ public class Resources {
 
     @GET
     @Secured
-    @Path("/{userid}/books")
+    @Path("/books")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Book> getBooks(@PathParam("userid") int userId) {
+    public List<Book> getBooks(@QueryParam("userid") int userId) {
 
         BookService service = new BookService();
 
@@ -56,9 +56,9 @@ public class Resources {
 
     @POST
     @Secured
-    @Path("/{userid}/books/new")
+    @Path("/books/new")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response addBook(@PathParam("userid") int userId,
+    public Response addBook(@QueryParam("userid") int userId,
                             @FormParam("title") String title,
                             @FormParam("publisher") String publisher,
                             @FormParam("yearpublished") int yearPublished,
@@ -73,7 +73,7 @@ public class Resources {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        Book book = new Book(0, userId, yearPublished, publisher, edition, title);
+        Book book = new Book(0, userId, yearPublished, publisher, edition, title, 0, 0);
 
         Person author = new Person(aFname, aLname);
 
@@ -95,9 +95,9 @@ public class Resources {
 
     @GET
     @Secured
-    @Path("/{userid}/books/{bookid}/notes")
+    @Path("/notes")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Note> getNotes(@PathParam("userid") int userId, @PathParam("bookid") int bookId) {
+    public List<Note> getNotes(@QueryParam("bookid") int bookId) {
 
         List<Note> notes;
 
@@ -117,9 +117,8 @@ public class Resources {
 
     @POST
     @Secured
-    @Path("/{userid}/books/{bookid}/notes/new")
-    public Response addNote(@PathParam("userid") int userId,
-                            @PathParam("bookid") int bookId,
+    @Path("/notes/new")
+    public Response addNote(@QueryParam("bookid") int bookId,
                             @FormParam("pagenotebegins") int pageNoteBegins,
                             @FormParam("pagenoteends") int pageNoteEnds,
                             @FormParam("text") String text) {
@@ -141,7 +140,7 @@ public class Resources {
 
     @GET
     @Secured
-    @Path("/{userid}/books/{bookid}/notes/{noteid}")
+    @Path("/notes/{noteid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Note getNote(@PathParam("noteid") int noteId) {
 
@@ -158,9 +157,9 @@ public class Resources {
 
     @GET
     @Secured
-    @Path("/{userid}/books/{bookid}/notes/{noteid}/citation")
+    @Path("/citation")
     @Produces(MediaType.APPLICATION_JSON)
-    public Citation getCitation(@PathParam("noteid") int noteId) {
+    public Citation getCitation(@QueryParam("noteid") int noteId) {
 
         NoteService service = new NoteService();
 

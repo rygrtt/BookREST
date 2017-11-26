@@ -177,10 +177,12 @@ public class BookJdbcDao extends BaseJdbcDao implements BookDao {
         int bookId = rs.getInt("bookId");
         int userId = rs.getInt("userId");
         int yearPublished = rs.getInt("yearPublished");
+        int authorId = rs.getInt("authorId");
+        int translatorId = rs.getInt("translatorId");
         String publisher = rs.getString("publisher");
         String title = rs.getString("title");
         String edition = rs.getString("edition");
 
-        return new Book(bookId, userId, yearPublished, publisher, edition, title);
+        return new Book(bookId, userId, yearPublished, publisher, edition, title, authorId, translatorId);
     }
 }
