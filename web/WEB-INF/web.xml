@@ -5,34 +5,25 @@
          version="3.1">
 
 
-<servlet>
-<servlet-name>BookREST API</servlet-name>
-<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <servlet>
+        <servlet-name>BookREST API</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 
-<init-param>
-    <param-name>jersey.config.servlet.provider.webapp</param-name>
-    <param-value>com.bookrest; com.fasterxml.jackson.jaxrs</param-value>
-</init-param>
-    <init-param>
-        <param-name>jersey.config.server.provider.packages</param-name>
-        <param-value>com.javapapers.webservices.rest.jersey</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-</servlet>
+        <init-param>
+            <param-name>jersey.config.servlet.provider.webapp</param-name>
+            <param-value>com.bookrest; com.fasterxml.jackson.jaxrs</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>com.javapapers.webservices.rest.jersey</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
 
-<servlet-mapping>
-<servlet-name>BookREST API</servlet-name>
-<url-pattern>/*</url-pattern>
-</servlet-mapping>
-
-<!--   <filter>
-        <filter-name>AuthenticationFilter</filter-name>
-        <filter-class>AuthenticationFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>AuthenticationFilter</filter-name>
-        <url-pattern>/users/*</url-pattern>
-    </filter-mapping>-->
+    <servlet-mapping>
+        <servlet-name>BookREST API</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>

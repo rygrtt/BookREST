@@ -16,17 +16,17 @@ import java.util.Date;
 public class LoginEndpoint {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes({MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON})
     public Response authenticateUser(@FormParam("username") String username,
                                      @FormParam("password") String password) {
 
         try {
 
             // Authenticate the user using the credentials provided
-            authenticate(username, password);
+            User user = authenticate(username, password);
 
             // Issue a token for the user
-            String token = issueToken(username);
+            String token = issueToken(user.getUserName(), user.getUserId());
 
             // Return the token on the response
             return Response.ok(token, MediaType.TEXT_PLAIN).build();
@@ -37,16 +37,20 @@ public class LoginEndpoint {
         }
     }
 
-    private void authenticate(String username, String password) throws Exception {
+    private User authenticate(String username, String password) throws Exception {
         UserService service = new UserService();
         User user = service.find(username, password);
 
         if (user == null) {
             throw new Exception();
         }
+
+        return user;
     }
 
-    private String issueToken(String username) {
+    private String issueToken(String username, int userId) {
+
+        String id = ((Integer) userId).toString();
 
         // pulling a pre-generated key from file
         // would probably want something more robust in a "real" system
@@ -56,7 +60,7 @@ public class LoginEndpoint {
         // and user name in subject field
         Date expirationDate = new Date(System.currentTimeMillis() + 60000000);
 
-        return Jwts.builder().setSubject(username).setExpiration(expirationDate)
+        return Jwts.builder().setSubject(username).setId(id).setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, key).compact();
     }
 
