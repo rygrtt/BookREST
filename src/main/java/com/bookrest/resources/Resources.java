@@ -68,8 +68,11 @@ public class Resources {
                             @FormParam("tfirstname") String tFname,
                             @FormParam("tlastname") String tLname) {
 
-        if (title.isEmpty() || aFname.isEmpty() || aLname.isEmpty() || publisher.isEmpty()
-                || yearPublished == 0) {
+        if (title == null || title.isEmpty() ||
+                aFname == null ||aFname.isEmpty() ||
+                aLname == null || aLname.isEmpty() ||
+                publisher == null || publisher.isEmpty() ||
+                yearPublished == 0) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -91,6 +94,7 @@ public class Resources {
            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
        }
     }
+
 
 
     @GET
@@ -164,8 +168,7 @@ public class Resources {
         NoteService service = new NoteService();
 
         try {
-            Citation citation = service.getCitation(noteId);
-            return citation;
+            return service.getCitation(noteId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

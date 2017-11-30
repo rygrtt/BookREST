@@ -71,7 +71,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         // returns collection of all claims contained in the token
         Jws<Claims> jws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 
-        // gets expiration time from among claims and comapres against current system time
+        // gets expiration time from among claims and compares against current system time
         if (jws.getBody().getExpiration().getTime() < System.currentTimeMillis()) {
             throw new Exception();
         }
