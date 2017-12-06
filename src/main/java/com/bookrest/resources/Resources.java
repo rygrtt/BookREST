@@ -108,6 +108,7 @@ public class Resources {
         NoteService service = new NoteService();
 
         try {
+
             notes = service.getNotes(bookId);
 
             return notes;
@@ -121,12 +122,12 @@ public class Resources {
     @POST
     @Secured
     @Path("/notes/new")
-    public Response addNote(@FormParam("text") String text,
+    public Response addNote(@QueryParam("bookid") int bookId,
                             @FormParam("pagenotebegins") int pageNoteBegins,
                             @FormParam("pagenoteends") int pageNoteEnds,
-                            @QueryParam("bookid") int bookId) {
+                            @FormParam("text") String text) {
 
-        if (pageNoteBegins > pageNoteEnds || text.isEmpty() || pageNoteBegins == 0 || pageNoteEnds == 0) {
+        if (pageNoteBegins < pageNoteEnds || text.isEmpty() || pageNoteBegins == 0 || pageNoteEnds == 0) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -134,7 +135,7 @@ public class Resources {
         NoteService svc = new NoteService();
 
         if (svc.insert(note)) {
-            return Response.ok().build();
+            return Response.status(Response.Status.CREATED).build();
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
