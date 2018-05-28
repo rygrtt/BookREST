@@ -1,1 +1,1 @@
-A very simple REST client for a Book Tracking app. Built with Jersey.
+A very simple REST server for a Book Tracking app. Built with Jersey.
